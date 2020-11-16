@@ -1,0 +1,1 @@
+#!/bin/shpath=../scriptspython $path/test.py
