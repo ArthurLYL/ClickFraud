@@ -18,7 +18,7 @@ dtypes = {
 # nrows = 10000
 nrows = None
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'is_attributed'], nrows=nrows)
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time'], nrows=nrows)
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time'], nrows=nrows)
 test_df['is_attributed'] = 0
 
 cst = pytz.timezone('Asia/Shanghai')
@@ -39,8 +39,8 @@ def set_day_hour(df):
 set_day_hour(train_df)
 set_day_hour(test_df)
 train_df.to_csv(work_dir + '/train_base.csv', index=False)
-test_df.to_csv(work_dir + '/test_supplement_base.csv', index=False)
+test_df.to_csv(work_dir + '/test_base.csv', index=False)
 
-for fld in ['ip', 'app', 'device', 'os', 'channel', 'day', 'hour', 'is_attributed']:
-    train_df[[fld]].to_csv(work_dir + '/train_base_' + fld + '.csv', index=False)
-    test_df[[fld]].to_csv(work_dir + '/test_supplement_base_' + fld + '.csv', index=False)
+# for fld in ['ip', 'app', 'device', 'os', 'channel', 'day', 'hour', 'is_attributed']:
+#     train_df[[fld]].to_csv(work_dir + '/train_base_' + fld + '.csv', index=False)
+#     test_df[[fld]].to_csv(work_dir + '/test_base_' + fld + '.csv', index=False)

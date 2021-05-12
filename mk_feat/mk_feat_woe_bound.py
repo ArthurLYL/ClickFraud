@@ -24,11 +24,11 @@ dtypes = {
     'click_id': 'uint32'
 }
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtypes, usecols=['ip','app','device','os', 'channel', 'click_time', 'is_attributed'], nrows=nrows)
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip','app','device','os', 'channel', 'click_time', 'click_id'], nrows=nrows)
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip','app','device','os', 'channel', 'click_time', 'click_id'], nrows=nrows)
 
 # load nextClickLeakDayFlt
 train_df['nextClickLeakDayFlt'] = pd.read_csv(work_dir+"/train_nextClickLeakDayFlt.csv", nrows=nrows)
-test_df['nextClickLeakDayFlt'] = pd.read_csv(work_dir+"/test_supplement_nextClickLeakDayFlt.csv", nrows=nrows)
+test_df['nextClickLeakDayFlt'] = pd.read_csv(work_dir+"/test_nextClickLeakDayFlt.csv", nrows=nrows)
 if frac:
     train_df = train_df.sample(frac=frac)
     test_df = test_df.sample(frac=frac)
@@ -85,8 +85,8 @@ def add_col(train_df, test_df, ptn):
     gp[name] = np.log((gp['sum']/pos)/((gp['count']-gp['sum']+s)/neg)+1)
     _df = test_df.merge(gp, on=cols, how='left')
     _df = _df.fillna(-1)
-    _df[[name]].to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
-    print(work_dir + '/test_supplement_' + name + '.csv')
+    _df[[name]].to_csv(work_dir + '/test_' + name + '.csv', index=False)
+    print(work_dir + '/test_' + name + '.csv')
     del _df
     gc.collect()
 

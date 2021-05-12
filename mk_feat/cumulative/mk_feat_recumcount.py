@@ -3,8 +3,8 @@ import sys
 import pytz
 import gc
 
-input_dir = '../../input'
-work_dir = '../../work'
+input_dir = '../input'
+work_dir = '../work'
 
 dtypes = {
     'ip': 'uint32',
@@ -18,7 +18,7 @@ dtypes = {
 # nrows=100000
 nrows=None
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'is_attributed'], nrows=nrows).reset_index()
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time'], nrows=nrows).reset_index()
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time'], nrows=nrows).reset_index()
 train_df['file_id'] = 0
 test_df['file_id'] = 1
 test_df['is_attributed'] = 0
@@ -35,10 +35,10 @@ def add_col(df,ptn):
     tr = sub[sub.file_id == 0].sort_values('index')[[name]]
     te = sub[sub.file_id == 1].sort_values('index')[[name]]
     tr.to_csv(work_dir + '/train_' + name + '.csv', index=False)
-    te.to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
+    te.to_csv(work_dir + '/test_' + name + '.csv', index=False)
     print('########### done for: ' + name + ' ###########')
     print(work_dir + '/train_' + name + '.csv')
-    print(work_dir + '/test_supplement_' + name + '.csv')
+    print(work_dir + '/test_' + name + '.csv')
     del sub, tr, te
     gc.collect()
 

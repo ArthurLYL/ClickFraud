@@ -32,26 +32,26 @@ def add_col(ptn):
     train_df = pd.DataFrame()
     test_df = pd.DataFrame()
     train_df[cum_ptn] = read_csv(work + 'train_' + cum_ptn + '.csv', nrows=nrows)[cum_ptn]
-    test_df[cum_ptn] = read_csv(work + 'test_supplement_' + cum_ptn + '.csv', nrows=nrows)[cum_ptn]
+    test_df[cum_ptn] = read_csv(work + 'test_' + cum_ptn + '.csv', nrows=nrows)[cum_ptn]
     cnt_ptn = "count_" + ptn
     train_df[cnt_ptn] = read_csv(work + 'train_' + cnt_ptn + '.csv', nrows=nrows)[cnt_ptn]
-    test_df[cnt_ptn] = read_csv(work + 'test_supplement_' + cnt_ptn + '.csv', nrows=nrows)[cnt_ptn]
+    test_df[cnt_ptn] = read_csv(work + 'test_' + cnt_ptn + '.csv', nrows=nrows)[cnt_ptn]
     all_df = train_df.append(test_df)
     name = 'cumratio_' + ptn
     all_df[name] = round(all_df[cum_ptn]/(all_df[cnt_ptn]-1), 4)
     all_df = all_df.fillna(1.1)
     all_df[:len(train_df)][[name]].to_csv(work + 'train_' + name + '.csv', index=False)
-    all_df[len(train_df):][[name]].to_csv(work + 'test_supplement_' + name + '.csv', index=False)
+    all_df[len(train_df):][[name]].to_csv(work + 'test_' + name + '.csv', index=False)
     print('done for', work + 'train_' + name + '.csv')
-    print('done for', work + 'test_supplement_' + name + '.csv')
+    print('done for', work + 'test_' + name + '.csv')
 
 
 if len(sys.argv) > 1:
-    path = '../../input' + sys.argv[1] + '/'
-    work = '../../work' + sys.argv[1] + '/'
+    path = '../input' + sys.argv[1] + '/'
+    work = '../work' + sys.argv[1] + '/'
 else:
-    path = '../../input/'
-    work = '../../work/'
+    path = '../input/'
+    work = '../work/'
 
 dtypes = {
     'ip': 'uint32',

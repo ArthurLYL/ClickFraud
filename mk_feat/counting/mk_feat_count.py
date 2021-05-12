@@ -6,8 +6,8 @@ import time
 import os
 
 
-input_dir = '../../input'
-work_dir = '../../work'
+input_dir = '../input'
+work_dir = '../work'
 
 dtypes = {
     'ip': 'uint32',
@@ -22,8 +22,8 @@ dtypes = {
 # nrows = 10000
 nrows = None
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'is_attributed'], nrows=nrows)
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
-test_org_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
+test_org_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
 test_df['is_attributed'] = 0
 
 len_train = len(train_df)
@@ -41,10 +41,10 @@ def add_col(df, ptn):
     cols_with_dummy.append(dummy)
     gp = df[cols_with_dummy].groupby(by=cols)[[dummy]].count().reset_index().rename(index=str, columns={dummy: name})
     _df = df.merge(gp, on=cols, how='left')
-    _df[[name]][len_train:].to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
+    _df[[name]][len_train:].to_csv(work_dir + '/test_' + name + '.csv', index=False)
     _df[[name]][:len_train].to_csv(work_dir + '/train_' + name + '.csv', index=False)
     print('########### done for: ' + name + ' ###########', time.time() - start / 60)
-    print(work_dir + '/test_supplement_' + name + '.csv')
+    print(work_dir + '/test_' + name + '.csv')
     print(work_dir + '/train_' + name + '.csv')
     del _df
     gc.collect()

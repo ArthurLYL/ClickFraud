@@ -6,7 +6,7 @@ import os
 import gc
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from scipy.special import logit
-from scripts.lib_util import get_target, get_opt, set_target, reset_target
+from lib_util import get_target, get_opt, set_target, reset_target
 import shutil
 import pdb
 
@@ -119,7 +119,7 @@ def read_data_ph1():
     tgt += '_smallTest=' + get_opt('smallTest', 'off')
     tgt += '_ver=3'
     tr_pkl_file = '../work/train_' + tgt + '.pkl'
-    te_pkl_file = '../work/test_supplement_' + tgt + '.pkl'
+    te_pkl_file = '../work/test_' + tgt + '.pkl'
     if os.path.isfile(tr_pkl_file) == True and os.path.isfile(te_pkl_file) == True:
         with open(tr_pkl_file, 'rb') as pk:
             print("loading", tr_pkl_file)
@@ -127,13 +127,18 @@ def read_data_ph1():
         with open(te_pkl_file, 'rb') as pk:
             print("loading", te_pkl_file)
             test_df = pickle.load(pk)
+        # print('Saving the final train datasets (83,174788422) and test datasets')
+        # train_df.to_csv('../work/train_df.csv', index=False)
+        # test_df.to_csv('../work/test_df.csv', index=False)
+        train_df = train_df.sample(frac=0.5, random_state=1)
+        # test_df = test_df.sample(frac=0.2, random_state=1)
         gc.collect()
         return train_df, test_df, numerical_patterns, cat_patterns
 
     # reading base data
     train_df = read_csv(work + "train_base.csv", dtype=dtypes,
                         usecols=['ip', 'app', 'device', 'os', 'channel', 'day', 'hour', 'is_attributed'], nrows=nrows)
-    test_df = read_csv(work + "test_supplement_base.csv", dtype=dtypes,
+    test_df = read_csv(work + "test_base.csv", dtype=dtypes,
                        usecols=['ip', 'app', 'device', 'os', 'channel', 'day', 'hour'], nrows=nrows)
     test_df['is_attributed'] = 0
 
@@ -144,7 +149,7 @@ def read_data_ph1():
         print('start for', ptn, n, '/', len(numerical_patterns))
         if ptn in train_df.columns: continue
         train_df[ptn] = read_csv(work + 'train_' + ptn + '.csv', nrows=nrows, df_len=len(train_df))
-        test_df[ptn] = read_csv(work + 'test_supplement_' + ptn + '.csv', nrows=nrows, df_len=len(test_df))
+        test_df[ptn] = read_csv(work + 'test_' + ptn + '.csv', nrows=nrows, df_len=len(test_df))
 
     # reading categorical data
     n = 0
@@ -161,7 +166,7 @@ def read_data_ph1():
             _test_df = test_df[[org_ptn]]
         else:
             _train_df = read_csv(work + 'train_' + org_ptn + '.csv', nrows=nrows, df_len=len(train_df))
-            _test_df = read_csv(work + 'test_supplement_' + org_ptn + '.csv', nrows=nrows, df_len=len(test_df))
+            _test_df = read_csv(work + 'test_' + org_ptn + '.csv', nrows=nrows, df_len=len(test_df))
         _train_df = _train_df.rename(columns={org_ptn: ptn})
         _test_df = _test_df.rename(columns={org_ptn: ptn})
 

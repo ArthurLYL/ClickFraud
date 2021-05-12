@@ -1,3 +1,6 @@
 *.png
 venv/
 input/
+csv/
+test.py
+work/

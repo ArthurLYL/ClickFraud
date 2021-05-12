@@ -1,1 +1,3 @@
-#!/bin/shpath=../scriptspython $path/test.py
+#!/bin/sh
+
+echo `date +%H:%M:%S`

@@ -4,8 +4,8 @@ import pytz
 import gc
 import time
 
-input_dir = '../../input'
-work_dir = '../../work'
+input_dir = '../input'
+work_dir = '../work'
 nrows=None
 
 dtypes = {
@@ -18,8 +18,8 @@ dtypes = {
     'click_id': 'uint32'
 }
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'is_attributed'], nrows=nrows)
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
-test_org_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
+test_org_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
 
 len_train = len(train_df)
 df = train_df.append(test_df)
@@ -41,10 +41,10 @@ def add_col(df, ptn):
     gp2 = df[cols].groupby(by=cols[0:len(cols)-1])[[cols[len(cols)-1]]].count().reset_index().rename(index=str, columns={cols[len(cols)-1]: 'cnt2'})
     _df['cnt2'] = df.merge(gp2, on=cols[0:len(cols)-1], how='left')['cnt2']
     _df[name] = _df['cnt1']/_df['cnt2']
-    _df[[name]][len_train:].to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
+    _df[[name]][len_train:].to_csv(work_dir + '/test_' + name + '.csv', index=False)
     _df[[name]][:len_train].to_csv(work_dir + '/train_' + name + '.csv', index=False)
     print('########### done for: ' + name + ' ###########', time.time()-start/60)
-    print(work_dir + '/test_supplement_' + name + '.csv')
+    print(work_dir + '/test_' + name + '.csv')
     print(work_dir + '/train_' + name + '.csv')
     del _df
     gc.collect()

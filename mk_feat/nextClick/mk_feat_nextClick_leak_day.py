@@ -7,8 +7,8 @@ import pytz
 # nrows=100000
 nrows=None
 
-input_dir = '../../input'
-work_dir = '../../work'
+input_dir = '../input'
+work_dir = '../work'
 
 dtype_train = {
     'ip': 'uint32',
@@ -28,7 +28,7 @@ dtype_test = {
 }
 
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtype_train, usecols=dtype_train.keys(), nrows=nrows, parse_dates=['click_time'])
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtype_test, usecols=dtype_test.keys(), nrows=nrows, parse_dates=['click_time'])
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtype_test, usecols=dtype_test.keys(), nrows=nrows, parse_dates=['click_time'])
 train_df['click_id'] = 0
 
 # need to check
@@ -50,15 +50,15 @@ df = df.sort_values(['click_time', 'is_attributed', 'click_id'])[['click_time', 
 name = 'nextClickLeakDay'
 df[name] = (df.groupby(['day', 'ip', 'app', 'device', 'os']).click_time.shift(-1) - df.click_time+1).fillna(999999).astype(int)
 out_df = df[[name]].sort_index()
-out_df[len_train:].to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
+out_df[len_train:].to_csv(work_dir + '/test_' + name + '.csv', index=False)
 out_df[:len_train].to_csv(work_dir + '/train_' + name + '.csv', index=False)
-print(work_dir + '/test_supplement_' + name + '.csv')
+print(work_dir + '/test_' + name + '.csv')
 print(work_dir + '/train_' + name + '.csv')
 
 name = 'nextNextClickLeakDay'
 df[name] = (df.groupby(['day', 'ip', 'app', 'device', 'os']).click_time.shift(-2) - df.click_time+1).fillna(999999).astype(int)
 out_df = df[[name]].sort_index()
-out_df[len_train:].to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
+out_df[len_train:].to_csv(work_dir + '/test_' + name + '.csv', index=False)
 out_df[:len_train].to_csv(work_dir + '/train_' + name + '.csv', index=False)
-print(work_dir + '/test_supplement_' + name + '.csv')
+print(work_dir + '/test_' + name + '.csv')
 print(work_dir + '/train_' + name + '.csv')

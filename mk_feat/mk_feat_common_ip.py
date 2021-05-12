@@ -21,7 +21,7 @@ dtypes = {
 }
 # test train.csv test_supplement.csv
 train_df = pd.read_csv(input_dir+"/train.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'is_attributed'], nrows=nrows)
-test_df = pd.read_csv(input_dir+"/test_supplement.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
+test_df = pd.read_csv(input_dir+"/test.csv", dtype=dtypes, usecols=['ip', 'app', 'device', 'os', 'channel', 'click_time', 'click_id'], nrows=nrows)
 # if frac:
 #     train_df = train_df.sample(frac=frac)
 #     test_df = test_df.sample(frac=frac)
@@ -81,8 +81,8 @@ def dump_pct_com_ip(pct):
     _df = pd.merge(df, gp_ip[['ip', 'flg']], on='ip', how='left').fillna(False)
     _df[name] = (_df['ip'] + 1) * _df['flg']
 
-    _df[[name]][len_train:].to_csv(work_dir + '/test_supplement_' + name + '.csv', index=False)
-    print('done for', work_dir + '/test_supplement_' + name + '.csv')
+    _df[[name]][len_train:].to_csv(work_dir + '/test_' + name + '.csv', index=False)
+    print('done for', work_dir + '/test_' + name + '.csv')
     _df[[name]][:len_train].to_csv(work_dir + '/train_' + name + '.csv', index=False)
     print('done for', work_dir + '/train_' + name + '.csv')
 

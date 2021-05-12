@@ -4,7 +4,7 @@ import random as rn
 from sklearn.metrics import roc_auc_score
 import sys
 import os
-from scripts.lib_util import get_target, get_opt
+from lib_util import get_target, get_opt
 import lightgbm as lgb
 from keras.layers import Input, Embedding, Dense, Flatten, Dropout, concatenate, BatchNormalization, SpatialDropout1D
 from keras.callbacks import Callback
@@ -35,21 +35,21 @@ def get_params(params_str):
     return params
 
 
-def LGBM(X_tr, X_va, X_te, predictors, cat_feats, seed=2018):
+def LGBM(X_tr, X_va, X_te, predictors, cat_feats, seed=2020):
     params_str = get_opt('params')
     if params_str != None:
         params = get_params(params_str)
-        return LGBM_helper(X_tr, X_va, X_te, predictors, cat_feats, params, seed=2018)
+        return LGBM_helper(X_tr, X_va, X_te, predictors, cat_feats, params, seed=2020)
 
 
-def Keras(X_tr, X_va, X_te, predictors, cat_feats, seed=2018):
+def Keras(X_tr, X_va, X_te, predictors, cat_feats, seed=2020):
     params_str = get_opt('params')
     if params_str is not None:
         params = get_params(params_str)
-        return Keras0_helper(X_tr, X_va, X_te, predictors, cat_feats, params, seed=2018)
+        return Keras0_helper(X_tr, X_va, X_te, predictors, cat_feats, params, seed=2020)
 
 
-def LGBM_helper(_X_tr, _X_va, _X_te, predictors, cat_feats, params, seed=2018):
+def LGBM_helper(_X_tr, _X_va, _X_te, predictors, cat_feats, params, seed=2020):
     os.environ['PYTHONHASHSEED'] = '0'  # rebuild hash value
     np.random.seed(seed)  # same random value
     rn.seed(seed)
@@ -114,7 +114,13 @@ def LGBM_helper(_X_tr, _X_va, _X_te, predictors, cat_feats, params, seed=2018):
     n_estimators = bst.best_iteration
     metric = params['metric']
     auc = evals_results['valid'][metric][n_estimators - 1]
+    print(n_estimators, metric)
+    print(n_estimators - 1)
+    print(evals_results)
+    print(evals_results['valid'])
+    print(evals_results['valid'][metric])
     _X_te['pred'] = bst.predict(X_te)
+    bst.save_model('../model/lgbm_params.txt')
 
     return auc
 
@@ -189,7 +195,7 @@ class EarlyStopping(Callback):
                     self.model.stop_training = True
 
 
-def Keras0_helper(_X_tr, _X_va, _X_te, predictors, cat_feats, params, seed=2018):
+def Keras0_helper(_X_tr, _X_va, _X_te, predictors, cat_feats, params, seed=2020):
     os.environ['PYTHONHASHSEED'] = '0'
     np.random.seed(seed)
     rn.seed(seed)
@@ -353,12 +359,12 @@ def Keras0_helper(_X_tr, _X_va, _X_te, predictors, cat_feats, params, seed=2018)
     return auc
 
 
-def Predict(X_tr, X_va, X_te, predictors, cat_feats, seed=2018):
+def Predict(X_tr, X_va, X_te, predictors, cat_feats, seed=2020):
     model = get_opt('model')
     if 'LGBM' in model:
-        return LGBM(X_tr, X_va, X_te, predictors, cat_feats, seed=2018)
+        return LGBM(X_tr, X_va, X_te, predictors, cat_feats, seed=2020)
     elif 'keras' in model:
-        return Keras(X_tr, X_va, X_te, predictors, cat_feats, seed=2018)
+        return Keras(X_tr, X_va, X_te, predictors, cat_feats, seed=2020)
     else:
         print("no valid model")
         sys.exit(1)

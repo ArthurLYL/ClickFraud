@@ -10,8 +10,8 @@ output_file_path = '../input/mapping.csv'
 
 def _split(line):
     line = line.strip()
-    index = line.index(',')
-    last_index = line.rindex(',')
+    index = line.find(',')
+    last_index = line.rfind(',')
     click_id = line[:index]
     payload = line[index:]
     time = line[last_index:]
@@ -73,5 +73,5 @@ with open(file_path, "r", encoding="utf-8") as test:
         pass
 
 
-import pandas as pd
-mapping = pd.read_csv(output_file_path, dtype={'click_id': 'int32', 'old_click_id': 'int32'}, engine='c', na_filter=False, memory_map=True)
+# import pandas as pd
+# mapping = pd.read_csv(output_file_path, dtype={'click_id': 'int32', 'old_click_id': 'int32'}, engine='c', na_filter=False, memory_map=True)
